@@ -6,6 +6,7 @@ from scipy.spatial.distance import pdist, squareform
 import matplotlib.pyplot as plt
 import scipy.integrate as integrate
 import matplotlib.animation as animation
+from sqlalchemy import true
 
 #Takes a coordinate and a grid and adds it to a 2D histogram
 def count(x,y,a,b,c):
@@ -81,7 +82,13 @@ def collision(dt,MFP,entropy):
 #Checks a particle's position to see if it hits the barrier
 #If it hits the barrier, reflect the particle based on its previous position 
 def wall_check(coordinate,t,hit_count,step):
-    if(coordinate[0]>=20): #hitting right wall
+    if(coordinate[0]>=20 and coordinate[1]>=20):
+        a=True
+        delta=np.array([-1,-1])
+    elif(coordinate[0]<=0 and coordinate[1]<=0):
+        a=True
+        delta=np.array([-1,-1])
+    elif(coordinate[0]>=20): #hitting right wall
         a=True
         delta=np.array([-1,1])
     elif(coordinate[0]<=0): #hitting left wall
@@ -132,8 +139,8 @@ def go():
     track=np.zeros(shape=(2,N,Z))
     track[:,:,0]=coordinates
     Svalues=np.zeros(200)
-    
-    while t < 200:
+    dS=100
+    while dS > 0.00001 or dS < 0:
         t=t+1
         T[t]=T[t-1]+dt
         
@@ -142,29 +149,25 @@ def go():
             coordinates[:,i]=coordinates[:,i]+delta
             check=wall_check(coordinates[:,i],t,hit_count,delta)
             coordinates[:,i]=check[0]
-            bah=check[2]
-            if(collision(dt,1,S)==True and bah==False):
+            check_bool=check[2]
+            if(collision(dt,1,S)==True and check_bool==False):
                 delta=step()*dt
                 coordinates[:,i]=coordinates[:,i]+delta
         
         track[:,:,t]=coordinates
-        S=entropy(box_histo(coordinates,20,2,N),N)
-        #Svalues[t]=S
-        #hit_count=hit_count*dF
-        #print(S)
+        S1=entropy(box_histo(coordinates,20,2,N),N)
+        dS=S1-S
+        S=S1
+        print(S)
     return track
 
 positions=go()
-#blah=go()
-#positions=blah[0]
-#S=blah[1]
-#P=blah[2]/400
 
 #Animation Section#
 
 # First set up the figure, the axis, and the plot element we want to animate
 fig = plt.figure()
-ax = plt.axes(xlim=(-10, 30), ylim=(-10, 30))
+ax = plt.axes(xlim=(0, 20), ylim=(0, 20))
 dot, = ax.plot([], [], 'bo', ms=1)
 
 # initialization function: plot the background of each frame
