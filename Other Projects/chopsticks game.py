@@ -1,5 +1,20 @@
 import numpy as np
 
+class Player:
+  def __init__(self,Left_Hand,Right_Hand):
+    self.Left=Left_Hand_Hand
+    self.Right=Right_Hand
+    self.Records=np.array([])
+  def Record(Turn_N,Opponent_Left,Opponent_Right,Set_N,Option_N):
+    Temp_Record=np.array([Turn_N,self.Left,self.Right,Opponent_Left,Opponent_Right,Set_N,Option_N])
+    if(np.size(self.Records)==0):
+      self.Records=np.insert(self.Records,0,Temp_Record)
+    else:
+      self.Records=np.vstack((self.Records,Temp_Record))
+
+Player_One=Player(1,1)
+Player_Two=Player(1,1)
+
 P1R=1
 P1L=1
 
