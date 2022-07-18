@@ -15,13 +15,7 @@ class Player:
 Player_One=Player(1,1)
 Player_Two=Player(1,1)
 
-P1R=1
-P1L=1
-
-P2R=1
-P2L=1
-
-state=np.array(([P1L,P1R],[P2L,P2R]))
+state=np.array(([Player_One.Left,Player_One.Right],[Player_Two.Left,Player_Two.Right]))
 
 set_one=['A(LL)','A(LR)','A(RL)','A(RR)','D(LR)','D(RL)']
 set_two=['A(RL)','A(RR)','D(LR)','D(RL)']
@@ -29,6 +23,20 @@ set_three=['A(LL)','A(LR)','D(LR)','D(RL)']
 set_four=['A(LR)','A(RR)','D(LR)','D(RL)']
 set_five=['A(LL)','A(RL)','D(LR)','D(RL)']
 set_six=['A(LL)','A(LR)','A(RL)','A(RR)']
+
+set_one_N=np.array([100,101,110,111,1,10])
+set_two_N=np.array([110,111,1,10])
+set_three_N=np.array([100,101,1,10])
+set_four_N=np.array([101,111,1,10])
+set_five_N=np.array([100,110,1,10])
+set_six_N=np.array([100,101,110,111])
+
+set_one_P=(1/6)*np.ones(6)
+set_two_P=(1/4)*np.ones(4)
+set_three_P=(1/4)*np.ones(4)
+set_four_P=(1/4)*np.ones(4)
+set_five_P=(1/4)*np.ones(4)
+set_six_P=(1/4)*np.ones(4)
 
 def attack(a,b):
     b=a+b
@@ -48,9 +56,8 @@ def turn(i):
     else:
         return 'Player2'
 
-#P=PLAYER, A=ATTACKER, D=DEFENDER R=RIGHT, L= LEFT
-def move(Attacker_Left,Attacker_Right,Defender_Left,Defender_Right):
-    state=np.array(([Attacker_Left,Attacker_Right],[Defender_Left,Defender_Right]))
+def option_select(Attacker_Left,Attacker_Right,Defender_Left,Defender_Right):
+    
     if(Attacker_Left==0 and Defender_Left==0):
         option='A(RR)'
     elif(Attacker_Right==0 and Defender_Right==0):
@@ -72,9 +79,10 @@ def move(Attacker_Left,Attacker_Right,Defender_Left,Defender_Right):
         option='D(RL)'
     if(option=='D(RL)' and Attacker_Right==0):
         option='D(LR)'
-    print('option',option)
-    
+    return option
 
+def move(Attacker_Left,Attacker_Right,Defender_Left,Defender_Right,option):
+    state=np.array(([Attacker_Left,Attacker_Right],[Defender_Left,Defender_Right]))
     if(option=='A(RR)'):
         state[1,1]=attack(Attacker_Right,Defender_Right)
     elif(option=='A(RL)'):
@@ -100,14 +108,15 @@ def move(Attacker_Left,Attacker_Right,Defender_Left,Defender_Right):
 i=1
 z=100
 while i<z:
-    print(turn(i))
+
     if(turn(i)=='Player1'):
+        option=option_select(*state[0,:],*state[1,:])
         state=move(*state[0,:],*state[1,:])
     elif(turn(i)=='Player2'):
+        option=option_select(*state[1,:],*state[0,:])
         state=move(*state[1,:],*state[0,:])
         state[[0,1]]=state[[1,0]]
-    print(state)
-    print('')
+    
     if(state[0,0]==0 and state[0,1]==0):
         print('Player1 is the winner')
         print('Won on turn',i)
