@@ -60,26 +60,42 @@ def option_select(Attacker_Left,Attacker_Right,Defender_Left,Defender_Right):
     
     if(Attacker_Left==0 and Defender_Left==0):
         option='A(RR)'
+        set_N=0
     elif(Attacker_Right==0 and Defender_Right==0):
         option='A(LL)'
+        set_N=0
     elif(Attacker_Left==0):
         option=np.random.choice(set_two)
+        set_N=2
     elif(Attacker_Right==0):
         option=np.random.choice(set_three)
+        set_N=3
     elif(Defender_Left==0):
         option=np.random.choice(set_four)
+        set_N=4
     elif(Defender_Right==0):
         option=np.random.choice(set_five)
+        set_N=5
     elif(Attacker_Left+Attacker_Right>=5):
         option=np.random.choice(set_six)
+        set_N=6
     else:
         option=np.random.choice(set_one)
-    
+        set_N=1
     if(option=='D(LR)' and Attacker_Left==0):
         option='D(RL)'
+        set_N=0
     if(option=='D(RL)' and Attacker_Right==0):
         option='D(LR)'
-    return option
+        set_N=0
+    return option,set_N
+  
+def option_conversion(option):
+  set=np.array(['A(LL)','A(LR)','A(RL)','A(RR)','D(LR)','D(RL)'])
+  set_N=np.array([100,101,110,111,1,10])
+  option_index=np.where(set=option)
+  option_N=set_N[option_index]
+  return option_N
 
 def move(Attacker_Left,Attacker_Right,Defender_Left,Defender_Right,option):
     state=np.array(([Attacker_Left,Attacker_Right],[Defender_Left,Defender_Right]))
@@ -110,13 +126,25 @@ z=100
 while i<z:
 
     if(turn(i)=='Player1'):
-        option=option_select(*state[0,:],*state[1,:])
+        option_n_set=option_select(*state[0,:],*state[1,:])
+        option=option_n_set[0]
+        set_N=option_n_set[1]
+        option_N=option_conversion(option)
         state=move(*state[0,:],*state[1,:])
+        Player_One.Left=state[0,0]
+        Player_One.Right=state[0,1]
+        Player_One.Record(i,*state[1,:],set_N,option_N)
     elif(turn(i)=='Player2'):
-        option=option_select(*state[1,:],*state[0,:])
+        option_n_set=option_select(*state[1,:],*state[0,:])
+        option=option_n_set[0]
+        set_N=option_n_set[1]
+        option_N=option_conversion(option)
         state=move(*state[1,:],*state[0,:])
+        Player_Two.Left=state[0,0]
+        Player_Two.Right=state[0,1]
+        Player_Two.Record(i,*state[1,:],set_N,option_N)
         state[[0,1]]=state[[1,0]]
-    
+        
     if(state[0,0]==0 and state[0,1]==0):
         print('Player1 is the winner')
         print('Won on turn',i)
