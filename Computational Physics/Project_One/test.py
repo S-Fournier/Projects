@@ -1,12 +1,6 @@
-from types import coroutine
 import numpy as np
 import matplotlib.pyplot as plt
-import random
-from scipy.spatial.distance import pdist, squareform
-import matplotlib.pyplot as plt
-import scipy.integrate as integrate
 import matplotlib.animation as animation
-from sqlalchemy import true
 
 #Takes a coordinate and a grid and adds it to a 2D histogram
 def count(x,y,a,b,c):
