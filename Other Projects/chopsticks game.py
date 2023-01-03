@@ -57,6 +57,7 @@ def turn(Turn_N):
     else:
         return 'Player2'
 
+<<<<<<< Updated upstream
 #CHOOSE A RANDOM MOVE OPTION BASED ON STATE OF THE GAME
 def option_select(Attacker_Left,Attacker_Right,Defender_Left,Defender_Right,Player):
     
@@ -65,6 +66,10 @@ def option_select(Attacker_Left,Attacker_Right,Defender_Left,Defender_Right,Play
     
     #IF/ELIF/ELSE STATEMENTS THAT LOOKS THROUGH ALL POSSIBLE STATES
     #USES CORRELATED PROBABILITY SET TO CHOOSE AN OPTION
+=======
+def move(Attacker_Left,Attacker_Right,Defender_Left,Defender_Right):
+    state=np.array(([Attacker_Left,Attacker_Right],[Defender_Left,Defender_Right]))
+>>>>>>> Stashed changes
     if(Attacker_Left==0 and Defender_Left==0):
         option=np.random.choice(Player.Set_Eight,p=Temp_P_Set[7,:])
         set_N=8
@@ -96,6 +101,7 @@ def option_select(Attacker_Left,Attacker_Right,Defender_Left,Defender_Right,Play
     if(option==10 and Attacker_Right==0):
         option=1
     
+<<<<<<< Updated upstream
     return option,set_N
 
 #CONVERTS OPTION STRING TO A BINARY VALUE
@@ -110,6 +116,8 @@ def option_conversion(option):
 def move(Attacker_Left,Attacker_Right,Defender_Left,Defender_Right,option):
     Game_State=np.array(([Attacker_Left,Attacker_Right],[Defender_Left,Defender_Right]))
     
+=======
+>>>>>>> Stashed changes
     if(option=='A(RR)'):
         Game_State[1,1]=attack(Attacker_Right,Defender_Right)
     elif(option=='A(RL)'):

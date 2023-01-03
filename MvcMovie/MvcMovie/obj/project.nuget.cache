@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "MKpMM45m4fEwUvpmQroCayI9tsa8EvA1YBzs7porUiqqmANRGK448h+cszjSNDagjxQ12cJi52ws3CghnGGHbQ==",
+  "dgSpecHash": "//zr5FwAuf70x6LsRoWLtEKItDcv156MggPIQKIICTJJKUfTpZdvWkPUsCErzRUNyOXimJXzSmEEMMnPcct1vw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\silly\\Documents\\GitHub\\MvcMovie\\MvcMovie\\MvcMovie.csproj",
+  "projectFilePath": "C:\\Users\\silly\\Documents\\GitHub\\Projects\\MvcMovie\\MvcMovie\\MvcMovie.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\silly\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\silly\\.nuget\\packages\\messagepack\\2.1.152\\messagepack.2.1.152.nupkg.sha512",

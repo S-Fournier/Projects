@@ -9471,11 +9471,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\silly\\Documents\\GitHub\\MvcMovie\\MvcMovie\\MvcMovie.csproj",
+      "projectUniqueName": "C:\\Users\\silly\\Documents\\GitHub\\Projects\\MvcMovie\\MvcMovie\\MvcMovie.csproj",
       "projectName": "MvcMovie",
-      "projectPath": "C:\\Users\\silly\\Documents\\GitHub\\MvcMovie\\MvcMovie\\MvcMovie.csproj",
+      "projectPath": "C:\\Users\\silly\\Documents\\GitHub\\Projects\\MvcMovie\\MvcMovie\\MvcMovie.csproj",
       "packagesPath": "C:\\Users\\silly\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\silly\\Documents\\GitHub\\MvcMovie\\MvcMovie\\obj\\",
+      "outputPath": "C:\\Users\\silly\\Documents\\GitHub\\Projects\\MvcMovie\\MvcMovie\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\silly\\AppData\\Roaming\\NuGet\\NuGet.Config",
