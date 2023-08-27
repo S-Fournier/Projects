@@ -2,74 +2,62 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from scipy.special import erf
-import math
+
+#OPTIONS
+distribution='normal' #normal or uniform
+plot='animation' #animation, entropy or pressure
+save='no' #save the animation
 
 #PARAMETERS
-Hits=0
-Steps=0
-N=1000
-Wall=1000
-t=0
-T_Stop=300
-xaxis=np.arange(0,T_Stop)
-
-k_B=1.38*10**(-23) #Boltzmann constant (J/K)
-m_H=1.67*10**(-24) #Mass of hydrogen (kg)
-T_K=300  #Temperature (K)
-v_th=np.sqrt(k_B*T_K/m_H)  #Thermal velocity
+N=1000 #number of particles
+Wall=1000 #box size
+T_Stop=300 #number of steps
+t_axis=np.arange(0,T_Stop) #range of steps
+s=0 #entropy variable initialization
+cell=int(Wall/100) #cell size
+constant=10 #constant affecting velocity
+k_B=1.38*10**(-23) #boltzmann constant (J/K)
+m_H=1.67*10**(-24) #mass of hydrogen (kg)
+T_K=300  #temperature (K)
+v_th=np.sqrt(k_B*T_K/m_H)  #thermal velocity
 
 #INITIAL CONDITIONS
 
-def boltzmann_velocities(u):
-    v=v_th*np.sqrt(-2*np.log(1-u))
+def boltzmann_velocities(mu):
+    v=v_th*np.sqrt(-2*np.log(1-mu))
     return v
 
-u=np.random.uniform(0,1,N)
-v=boltzmann_velocities(u)/10
-Buffer=int(np.amax(v))
-
-#Arrays of particle x and y coordinates
-
-distribution='uniform'
+mu=np.random.uniform(0,1,N) #random input variable for the distribution
+v=boltzmann_velocities(mu)/constant #modify mu to new velocity
+Buffer=int(np.amax(v)) #buffer zone to prevent particles from going out of range
+theta=np.random.uniform(0,2*np.pi,N)
+vx=v*np.cos(theta) #velocity in x direction
+vy=v*np.sin(theta) #velocity in y direction
 
 if(distribution=='normal'):
     x=np.random.normal(0.5*Wall,20,N)
     y=np.random.normal(0.5*Wall,20,N)
 
 elif(distribution=='uniform'):
-    x_portion=1
-    y_portion=1
-    x=np.random.uniform(Buffer,x_portion*Wall-Buffer,N)
-    y=np.random.uniform(Buffer,y_portion*Wall-Buffer,N)
+    x=np.random.uniform(Buffer,Wall-Buffer,N)
+    y=np.random.uniform(Buffer,Wall-Buffer,N)
 
-#Array of particle velocities in x and y directions
-
-theta=np.random.uniform(0,2*np.pi,N)
-
-vx=v*np.cos(theta)
-vy=v*np.sin(theta)
-
-#Records
-s_record=np.zeros(T_Stop) #entropy
-p_record=np.zeros(T_Stop) #pressure
-x_record=np.zeros(shape=(N,T_Stop)) #x coordinates
-y_record=np.zeros(shape=(N,T_Stop)) #y coordinates
-vx_record=np.zeros(shape=(N,T_Stop)) #velocities in x direction
-vy_record=np.zeros(shape=(N,T_Stop)) #velocities in y direction
-hit_record=np.zeros(shape=(N,T_Stop)) #hits
-free_record=np.zeros(N)
+#RECORDS
+s_record=np.zeros(T_Stop)
+p_record=np.zeros(T_Stop)
+x_record=np.zeros(shape=(N,T_Stop))
+y_record=np.zeros(shape=(N,T_Stop))
 
 #GRID AND ID SETUP
 ID=np.arange(1,N+1)
 Grid=np.zeros(shape=(Wall+Buffer,Wall+Buffer))
-Grid_Bins=Grid
+Grid_Bins=np.zeros(shape=(Wall+Buffer,Wall+Buffer))
 
-
-def wall_check(x,y,vx,vy,p_record):
+def wall_check(x,y,vx,vy,p_record,m_H):
     
     Hit=False
     
-    #Boolean check#
+    #BOOLEAN CHECK#
     a=x>=Wall
     b=y>=Wall
     c=x<=0
@@ -82,123 +70,104 @@ def wall_check(x,y,vx,vy,p_record):
         Hit=True
         vy=-vy
     if(Hit==True):
-        
         x=x+vx
         y=y+vy
     
-    vmag=np.sqrt(vx**2+vy**2)
+        vmag=np.sqrt(vx**2+vy**2)
 
-    p_record=p_record+2*vmag
+        p_record=p_record+2*m_H*vmag
     
     return x,y,vx,vy,p_record
 
-while t<T_Stop:
-    
-    for i in range(N):
+#START SIMULATION
 
-        Steps=Steps+1
+for t in range(T_Stop):
+    
+    #ACTIONS IN TIME STEP t
+
+    for i in range(N):
+        
+        #MOVE PARTICLE i
 
         x[i]=x[i]+vx[i]
         y[i]=y[i]+vy[i]
 
-        free_record[i]=free_record[i]+1
-
         #WALL CHECK
 
-        x[i],y[i],vx[i],vy[i],p_record[t]=wall_check(x[i],y[i],vx[i],vy[i],p_record[t])
+        x[i],y[i],vx[i],vy[i],p_record[t]=wall_check(x[i],y[i],vx[i],vy[i],p_record[t],m_H)
     
         #END WALL CHECK
 
-        ID_TEMP=ID[i]
+        #PLACE GRID MARKER
         
-        Grid[int(x[i]),int(y[i])]=Grid[int(x[i]),int(y[i])]+ID_TEMP
+        Grid[int(x[i]),int(y[i])]=Grid[int(x[i]),int(y[i])]+ID[i]
         Grid_Bins[int(x[i]),int(y[i])]=Grid_Bins[int(x[i]),int(y[i])]+1
-        G_TEMP=Grid[int(x[i]),int(y[i])]
 
         #COLLISION CHECK
         
-        if(Grid[int(x[i]),int(y[i])]!=ID_TEMP):
-            
-            Hits=Hits+2
+        if(Grid[int(x[i]),int(y[i])]!=ID[i]):
 
-            u=int(G_TEMP-ID_TEMP-1)
-
-            Grid[int(x[i]),int(y[i])]=0
-            Grid_Bins[int(x[i]),int(y[i])]=0
+            u=int(Grid[int(x[i]),int(y[i])]-ID[i]-1)
 
             vx[i],vx[u]=-vx[u],-vx[i]
             vy[i],vy[u]=-vy[u],-vy[i]
-            
-            x[i]=x[i]+vx[i]
-            y[i]=y[i]+vy[i]
-            x[u]=x[u]+vx[u]
-            y[u]=y[u]+vy[u]
-            
-            #WALL CHECK
-            x[i],y[i],vx[i],vy[i],p_record[t]=wall_check(x[i],y[i],vx[i],vy[i],p_record[t])
-            x[u],y[u],vx[u],vy[u],p_record[t]=wall_check(x[u],y[u],vx[u],vy[u],p_record[t])
-            #END WALL CHECK
-            hit_record[i,t]=free_record[i]
-            hit_record[u,t]=free_record[u]
-            free_record[i]=0
-            free_record[u]=0
 
+            Grid[int(x[i]),int(y[i])]=0
 
         #END COLLISION CHECK
 
-
     #CALCULATE ENTROPY
-    s=0
-    for i in range(20):
-        box_sum=np.sum(Grid_Bins[10*i:10*(i+1),10*i:10*(i+1)])
-        p=box_sum/N
-        if(p>0):
-            s=s+p*np.log(p)
-    s=-s
+    if(plot=='entropy'):
+        for a in range(cell):
+            for b in range(cell):
+                Bin=0
+                for i in range(cell):
+                    for j in range(cell):
+                        Bin=Bin+Grid_Bins[cell*a+i][cell*b+j]
+                p=Bin/N
+                if(p>0):
+                    s=s-p*np.log(p)
+                p=0
     
     #RECORD
     s_record[t]=s
     x_record[:,t]=x
     y_record[:,t]=y
-    vx_record[:,t]=vx
-    vy_record[:,t]=vy
     
-    #RESET GRID
+    #RESET
     Grid=np.zeros(shape=(Wall+Buffer,Wall+Buffer))
+    Grid_Bins=np.zeros(shape=(Wall+Buffer,Wall+Buffer))
+    s=0
 
-    t=t+1
+#END SIMULATION
 
-vmag=np.sqrt(vx_record**2+vy_record**2)
-nonzero_indices = np.nonzero(hit_record)
-mean_time=np.mean(hit_record[nonzero_indices])
-mean_v=np.mean(vmag)
+#DISPLAYING SIMULATION DATA
 
-#Animation Section#
+if(plot=='animation'):
+    fig=plt.figure()
+    ax=plt.axes(xlim=(0-(Wall/10),Wall+(Wall/10)),ylim=(0-(Wall/10),Wall+(Wall/10)))
+    plt.axis('off')
+    rectangle=plt.Rectangle((0,0),Wall,Wall,fc='white',ec="red")
+    plt.gca().add_patch(rectangle)
+    dot,=ax.plot([],[],'bo',ms=1)
 
-option=0
-
-if(option==0):
-    # First set up the figure, the axis, and the plot element we want to animate
-    fig = plt.figure()
-    ax = plt.axes(xlim=(0-(Wall/10), Wall+(Wall/10)), ylim=(0-(Wall/10), Wall+(Wall/10)))
-    dot, = ax.plot([], [], 'bo', ms=1)
-
-    # initialization function: plot the background of each frame
     def init():
-        dot.set_data([], [])
+        dot.set_data([],[])
         return dot,
 
-    # animation function.  This is called sequentially
     def animate(i):
-        x = x_record[:,i]
-        y = y_record[:,i]
+        x=x_record[:,i]
+        y=y_record[:,i]
         dot.set_data(x, y)
         return dot,
 
-    # call the animator.  blit=True means only re-draw the parts that have changed.
-    anim = animation.FuncAnimation(fig, animate, init_func=init, frames=T_Stop, interval=200, blit=True)
-elif(option==1):
-    plt.plot(xaxis,s_record,'.')
-plt.show()
+    anim=animation.FuncAnimation(fig,animate,init_func=init,frames=T_Stop,interval=200,blit=True)
+    if(save=='yes'):
+        anim.save('test1.gif')
 
-#COMPARE TIME FOR NESTED FOR LOOP AND GRID DETECTION SYSTEM
+elif(plot=='entropy'):
+    plt.plot(t_axis,s_record,'.')
+
+elif(plot=='pressure'):
+    plt.plot(t_axis,p_record,'.')
+plt.show()
