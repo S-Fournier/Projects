@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-from scipy.special import erf
 
 #OPTIONS
 distribution='normal' #normal or uniform
