@@ -10,12 +10,12 @@ save='no' #save the animation
 
 #PARAMETERS
 N=1000 #number of particles
-Wall=1000 #box size
-T_Stop=300 #number of steps
-t_axis=np.arange(0,T_Stop) #range of steps
+Wall=10000 #box size
+time_stop=300 #number of steps
+time_axis=np.arange(0,time_stop) #range of steps
 s=0 #entropy variable initialization
 cell=int(Wall/100) #cell size
-constant=10 #constant affecting velocity
+v_k=1 #constant affecting velocity
 k_B=1.38*10**(-23) #boltzmann constant (J/K)
 m_H=1.67*10**(-24) #mass of hydrogen (kg)
 T_K=300  #temperature (K)
@@ -24,11 +24,11 @@ v_th=np.sqrt(k_B*T_K/m_H)  #thermal velocity
 #INITIAL CONDITIONS
 
 def boltzmann_velocities(mu):
-    v=v_th*np.sqrt(-2*np.log(1-mu))
+    v=v_k*v_th*np.sqrt(-2*np.log(1-mu)) #distribution of velocities given by the boltzman equation
     return v
 
-mu=np.random.uniform(0,1,N) #random input variable for the distribution
-v=boltzmann_velocities(mu)/constant #modify mu to new velocity
+mu=np.random.uniform(0,1,N) #array of random input variables for the distribution
+v=boltzmann_velocities(mu) #velocities picked from distrubution using mu
 Buffer=int(np.amax(v)) #buffer zone to prevent particles from going out of range
 theta=np.random.uniform(0,2*np.pi,N)
 vx=v*np.cos(theta) #velocity in x direction
@@ -43,15 +43,15 @@ elif(distribution=='uniform'):
     y=np.random.uniform(Buffer,Wall-Buffer,N)
 
 #RECORDS
-s_record=np.zeros(T_Stop)
-p_record=np.zeros(T_Stop)
-x_record=np.zeros(shape=(N,T_Stop))
-y_record=np.zeros(shape=(N,T_Stop))
+s_record=np.zeros(time_stop)
+p_record=np.zeros(time_stop)
+x_record=np.zeros(shape=(N,time_stop))
+y_record=np.zeros(shape=(N,time_stop))
 
 #GRID AND ID SETUP
 ID=np.arange(1,N+1)
-Grid=np.zeros(shape=(Wall+Buffer,Wall+Buffer))
-Grid_Bins=np.zeros(shape=(Wall+Buffer,Wall+Buffer))
+Grid=np.zeros(shape=(Wall+Buffer,Wall+Buffer)) #the position grid where the particles place their ID flags
+Grid_Bins=np.zeros(shape=(Wall+Buffer,Wall+Buffer)) #bins 
 
 def wall_check(x,y,vx,vy,p_record,m_H):
     
@@ -81,7 +81,7 @@ def wall_check(x,y,vx,vy,p_record,m_H):
 
 #START SIMULATION
 
-for t in range(T_Stop):
+for t in range(time_stop):
     
     #ACTIONS IN TIME STEP t
 
@@ -109,8 +109,8 @@ for t in range(T_Stop):
 
             u=int(Grid[int(x[i]),int(y[i])]-ID[i]-1)
 
-            vx[i],vx[u]=-vx[u],-vx[i]
-            vy[i],vy[u]=-vy[u],-vy[i]
+            vx[i],vx[u]=vx[u],vx[i]
+            vy[i],vy[u]=vy[u],vy[i]
 
             Grid[int(x[i]),int(y[i])]=0
 
@@ -161,13 +161,13 @@ if(plot=='animation'):
         dot.set_data(x, y)
         return dot,
 
-    anim=animation.FuncAnimation(fig,animate,init_func=init,frames=T_Stop,interval=200,blit=True)
+    anim=animation.FuncAnimation(fig,animate,init_func=init,frames=time_stop,interval=200,blit=True)
     if(save=='yes'):
         anim.save('test1.gif')
 
 elif(plot=='entropy'):
-    plt.plot(t_axis,s_record,'.')
+    plt.plot(time_axis,s_record,'.')
 
 elif(plot=='pressure'):
-    plt.plot(t_axis,p_record,'.')
+    plt.plot(time_axis,p_record,'.')
 plt.show()
