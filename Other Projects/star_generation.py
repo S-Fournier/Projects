@@ -1,10 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import random
-from scipy.spatial.distance import pdist, squareform
-import matplotlib.pyplot as plt
-import scipy.integrate as integrate
-import matplotlib.animation as animation
 from PIL import Image
 
 # PIL accesses images in Cartesian co-ordinates, so it is Image[columns, rows]
