@@ -9,7 +9,7 @@ time_axis=np.arange(0,n)
 Z=np.zeros(shape=(size,size))
 Z_record=np.zeros(shape=(n,size,size))
 count=np.zeros(n)
-option='animate'
+option='histogram'
 save=False
 save_name='soc_1.2.gif'
 
