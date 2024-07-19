@@ -1,8 +1,19 @@
-body {
-    text-align: center;
-    padding-top: 20%;
+html, body {
+    height: 100%;
+    margin: 0;
 }
 
-div {
-    vertical-align: middle;
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
+
+.frame {
+    align-content: center;
+    aspect-ratio: 1/1;
+    height: 20%;
+    text-align: center;
+    padding: 20px;
+    border: 5px solid black;
+} 

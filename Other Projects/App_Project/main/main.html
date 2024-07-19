@@ -1,16 +1,27 @@
 <!DOCTYPE html>
 <html>
     <body>
-        <script src="../options/options.js"></script>
+        
+        <link rel="stylesheet" href="main.css">
         <script src="main.js"></script>
-        <div id="frame">
+        
+        <div class="frame">
+
+            <div id="initial" class="initial">
             <p>Good morning! What would you like to do today?</p>
             <input type="text" id="to_do_activity">
-            <button onclick="add_to_do_list()">Add</button>
-            <ul id="display_to_do_list"></ul>
+            <button onclick="add_to_list()">Add</button>
+            <ul id="display_list"></ul>
             <button onclick="start()">Start</button>
+            </div>
+
+            <div id="check" class="check">
+            <p>Breaktime! What did you do?</p>
+            <ul id="checklist_ul"></ul>
+            <button onclick="submit()">Submit</button>
+            </div>
+            
         </div>
-        <div id="check">
-        </div>
+        
     </body>
 </html>

@@ -1,27 +1,32 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <link rel="stylesheet" href="options.css">
-    </head>
     <body>
-        <script src="options.js"></script>
-        <div>Interval</div>
-        <input type="range" value="30" min="15" max="60" step="5" oninput="this.nextElementSibling.value = this.value" id="interval_time">
-        <output>30</output>
-        <button onclick="save_interval_time()">Save</button>
 
-        <div>End Time</div>
-        <input type="time" id="end_time">
-        <button onclick="save_end_time()">Save</button>
+        <div class="frame">
+                    
+            <div>Interval</div>
+            <input type="range" value="30" min="15" max="60" step="5" oninput="this.nextElementSibling.value = this.value" id="interval_time">
+            <output>30</output>
+
+            <div>End Time</div>
+            <input type="time" id="end_time">
         
-        <div>Default activities</div>
-        <input type="text" id="default_activity">
-        <button onclick="add_to_list()">Add</button>
-        <ul id="display_list"></ul>
+            <div>Default Activities</div>
+            <input type="text" id="default_activity">
+            <button onclick="add_to_array()">Add</button>
+            <div class="frame_ul">
+                <ul id="display_list"></ul>
+            </div>
 
-        <a href="../home/home.html">
-            <button>Home</button>
-        </a>
-        <button onclick="display_array()">check work</button>
+            <div class="frame_footer">
+                <button onclick="save_settings()">Save</button>
+                <a href="../home/home.html"> <button>Home</button> </a>
+            </div>
+
+        </div>
     </body>
+
+    <link rel="stylesheet" href="options.css">
+    <script src="options.js"></script>
+
 </html>
