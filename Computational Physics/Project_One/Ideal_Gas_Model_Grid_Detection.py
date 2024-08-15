@@ -4,7 +4,7 @@ import matplotlib.animation as animation
 
 #OPTIONS
 distribution='normal' #normal or uniform
-plot='animation' #animation, entropy or pressure
+plot='pressure' #animation, entropy or pressure
 save='no' #save the animation
 
 #PARAMETERS
@@ -75,6 +75,7 @@ def wall_check(x,y,vx,vy,p_record,m_H):
         vmag=np.sqrt(vx**2+vy**2)
 
         p_record=p_record+2*m_H*vmag
+        x,y,vx,vy,p_record=wall_check(x,y,vx,vy,p_record,m_H) #call method again as a safeguard
     
     return x,y,vx,vy,p_record
 
